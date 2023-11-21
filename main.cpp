@@ -1,7 +1,7 @@
 #include <thcrap.h>
 #include <windows.h>
 
-void run_memory_scan()
+void th06_mem_scan()
 {
     while (true)
     {
@@ -38,6 +38,7 @@ void run_memory_scan()
 
 extern "C"
 {
+
     TH_EXPORT int thcrap_plugin_init()
     {
         log_print("[9L] Starting lib9launcher...\n");
@@ -54,7 +55,6 @@ extern "C"
             }
         }
 
-        // Create a file in Z:/dev/shm/9launcher/test.txt
         HANDLE hFile = CreateFileA("Z:/dev/shm/9launcher/data.json", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (hFile == INVALID_HANDLE_VALUE)
         {
@@ -65,8 +65,10 @@ extern "C"
         CloseHandle(hFile);
 
         const char *game = runconfig_game_get();
-
-        HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)run_memory_scan, NULL, 0, NULL);
+        log_printf("[9L] Game: %s\n", game);
+        if (strcmp(game, "th06") == 0) {
+            HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)th06_mem_scan, NULL, 0, NULL);
+        }
 
         return 0;
     }
@@ -82,6 +84,6 @@ extern "C"
                 break;
         }
 
-        return TRUE;
+        return true;
     }
 }
