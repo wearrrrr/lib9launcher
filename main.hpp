@@ -1,3 +1,5 @@
+#define countof(array_type) (sizeof(array_type) / sizeof(array_type[0]))
+
 #define TH06_LIVES_ADDR 0x0069d4ba
 #define TH06_BOMBS_ADDR 0x0069d4bb
 #define TH06_POWER_ADDR 0x0069d4b0
