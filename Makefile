@@ -13,7 +13,7 @@
 	RELEASE = TRUE
 
 build:
-	${CC} -nostdlib -flto -fuse-ld=lld -fno-exceptions -Wl,-s -Wl -target i686-pc-win32-gnu -shared ${INPUT_FILES} -Oz thcrap.lib -lkernel32 -lmsvcrt -I${WIN32UTF8} -I${THCRAP_EXTERNAL_DEPS} -I${THCRAP_HEADERS} -D_GLIBCXX_USE_DEPRECATED=0 -std=c++17 -o ${DLL_NAME}
+	${CC} -target i686-pc-win32-gnu -shared ${INPUT_FILES} -Oz thcrap.lib -I${WIN32UTF8} -I${THCRAP_EXTERNAL_DEPS} -I${THCRAP_HEADERS} -D_GLIBCXX_USE_DEPRECATED=0 -std=c++17 -o ${DLL_NAME}
 	@if [ -f ${DLL_NAME} ]; then \
 		echo "Build successful!"; \
 	else \
@@ -32,6 +32,7 @@ clean:
 
 pack:
 	@echo "Packing with " ${PACKER}
+	# Currently only UPX works properly, but I am not prioritizing packing anyways so, it doesn't matter too much.
 	@${PACKER} ${DLL_NAME} -o packed_${DLL_NAME}
 	@echo "DLL Packed!"
 
