@@ -1,4 +1,5 @@
 #define countof(array_type) (sizeof(array_type) / sizeof(array_type[0]))
+#define btrstrcmp(str1, str2) (!strcmp(str1, str2))
 
 // Touhou 6
 #define TH06_LIVES_ADDR 0x0069d4ba

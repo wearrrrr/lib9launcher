@@ -240,7 +240,7 @@ DWORD __stdcall mem_scan(void*)
 
 inline bool get_game_id(const char* find_str) {
   for (size_t i = 0; i < countof(game_strs); ++i) {
-    if (!strcmp(find_str, game_strs[i])) {
+    if (btrstrcmp(find_str, game_strs[i])) {
       GAME_ID = (GameId)i;
       return true;
     }
