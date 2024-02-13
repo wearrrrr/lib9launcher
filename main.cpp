@@ -5,6 +5,7 @@
 #include "main.hpp"
 
 #undef IN
+#pragma GCC diagnostic ignored "-Wc99-designator"
 
 char* alloc_vsprintf(const char* format, va_list va) {
     va_list va2;
@@ -171,16 +172,16 @@ GameId GAME_ID;
 
 static const GameDataOffsets game_offsets_lookup[] {
     [EoSD] = {
-        .lives = TH06_LIVES_ADDR,
-        .bombs = TH06_BOMBS_ADDR,
-        .power = TH06_POWER_ADDR,
-        .character = TH06_CHAR_ADDR,
-        .shottype = TH06_SHOTTYPE_ADDR,
-        .score = TH06_SCORE_ADDR,
-        .stage = TH06_STAGE_ADDR,
-        .difficulty = TH06_DIFFICULTY_ADDR,
-        .gamestate = TH06_GAMESTATE_ADDR,
-        .game = EoSD
+      .lives = TH06_LIVES_ADDR,
+      .bombs = TH06_BOMBS_ADDR,
+      .power = TH06_POWER_ADDR,
+      .character = TH06_CHAR_ADDR,
+      .shottype = TH06_SHOTTYPE_ADDR,
+      .score = TH06_SCORE_ADDR,
+      .stage = TH06_STAGE_ADDR,
+      .difficulty = TH06_DIFFICULTY_ADDR,
+      .gamestate = TH06_GAMESTATE_ADDR,
+      .game = EoSD
     },
     [PCB] = {
       .game_manager = TH07_GAMEMANAGER_ADDR,
@@ -189,9 +190,9 @@ static const GameDataOffsets game_offsets_lookup[] {
       .lives = TH07_GLOBALS_ADDR + 0x5C,
       .bombs = TH07_GLOBALS_ADDR + 0x68,
       .power = TH07_GLOBALS_ADDR + 0x7C,
-      .score = TH07_GLOBALS_ADDR + 0x4,
       .character = TH07_CHARACTER_ADDR,
       .shottype = TH07_SHOTTYPE_ADDR,
+      .score = TH07_GLOBALS_ADDR + 0x4,
       .stage = TH07_STAGE_ADDR,
       .difficulty = TH07_DIFFICULTY_ADDR,
       .game = PCB
