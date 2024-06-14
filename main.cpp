@@ -2,38 +2,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdint.h>
+#include <jansson.h>
 #include "main.hpp"
 
 #undef IN
 #pragma GCC diagnostic ignored "-Wc99-designator"
-
-char* alloc_vsprintf(const char* format, va_list va) {
-    va_list va2;
-    va_copy(va2, va);
-    int length = vsnprintf(NULL, 0, format, va2);
-    va_end(va2);
-    char* buffer = (char*)malloc(length + 1);
-    if (!buffer) {
-      return NULL;
-    }
-    va_copy(va2, va);
-    int ret = vsprintf(buffer, format, va2);
-    va_end(va2);
-    if (ret != -1) {
-      return buffer;
-    } else {
-      free(buffer);
-      return NULL;
-    }
-  };
-
-char* alloc_sprintf(const char* format, ...) {
-  va_list va;
-  va_start(va, format);
-  char* ret = alloc_vsprintf(format, va);
-  va_end(va);
-  return ret;
-};
 
 enum GameId : uint8_t {
   EoSD,
@@ -228,7 +201,19 @@ DWORD __stdcall mem_scan(void*)
         // Write information to JSON file, make sure its formatted with tabs
         // TODO: make this a bit more elegant, maybe use a library
         const char* json = "{\n\t\"lives\": %d,\n\t\"bombs\": %d,\n\t\"power\": %d,\n\t\"score\": %d,\n\t\"character\": %d,\n\t\"shottype\": %d,\n\t\"stage\": %d,\n\t\"difficulty\": %d,\n\t\"gamestate\": %d,\n\t\"game\": %d\n}";
-        char* buf = alloc_sprintf(json, lives, bombs, power, score, read_byte(current_game_offsets->character), read_byte(current_game_offsets->shottype), read_byte(current_game_offsets->stage), read_byte(current_game_offsets->difficulty), current_game_offsets->is_game_manager_init(current_game_offsets->game_manager), current_game_offsets->game);
+        // char* buf = alloc_sprintf(json, lives, bombs, power, score, read_byte(current_game_offsets->character), read_byte(current_game_offsets->shottype), read_byte(current_game_offsets->stage), read_byte(current_game_offsets->difficulty), current_game_offsets->is_game_manager_init(current_game_offsets->game_manager), current_game_offsets->game);
+        // Rewrite the above to use jansson
+        json_error_t err;
+        json_t* root = json_loads(json, 0, &err);
+        if (!root) {
+          fprintf(stderr, "[9L] ERR: Line %d: %s\n", err.line, err.text);
+          return 1;
+        }
+        char* buf = json_dumps(root, JSON_INDENT(4));
+        if (!buf) {
+          fprintf(stderr, "[9L] ERR: Failed to dump json\n");
+          return 1;
+        }
         WriteFile(hFile, buf, strlen(buf), &bytesWritten, NULL);
 
 

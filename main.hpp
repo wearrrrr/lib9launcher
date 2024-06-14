@@ -20,3 +20,31 @@
 #define TH07_STAGE_ADDR 0x0062F85C
 #define TH07_DIFFICULTY_ADDR 0x00626280
 #define TH07_GAMESTATE_ADDR 0x0134D9CC
+
+char* alloc_vsprintf(const char* format, va_list va) {
+    va_list va2;
+    va_copy(va2, va);
+    int length = vsnprintf(NULL, 0, format, va2);
+    va_end(va2);
+    char* buffer = (char*)malloc(length + 1);
+    if (!buffer) {
+      return NULL;
+    }
+    va_copy(va2, va);
+    int ret = vsprintf(buffer, format, va2);
+    va_end(va2);
+    if (ret != -1) {
+      return buffer;
+    } else {
+      free(buffer);
+      return NULL;
+    }
+  };
+
+char* alloc_sprintf(const char* format, ...) {
+  va_list va;
+  va_start(va, format);
+  char* ret = alloc_vsprintf(format, va);
+  va_end(va);
+  return ret;
+};
