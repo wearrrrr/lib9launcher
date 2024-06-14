@@ -13,7 +13,7 @@
 	RELEASE = TRUE
 
 build:
-	${CC} -target i686-pc-win32-gnu -shared ${INPUT_FILES} -Oz thcrap.lib jansson.lib -I${WIN32UTF8} -I${THCRAP_EXTERNAL_DEPS} -I${THCRAP_HEADERS} -D_GLIBCXX_USE_DEPRECATED=0 -Wno-ignored-attributes -std=c++17 -o ${DLL_NAME}
+	${CC} -target i686-pc-win32-gnu -shared ${INPUT_FILES} -Oz thcrap.lib jansson.lib -I${WIN32UTF8} -I${THCRAP_EXTERNAL_DEPS} -I${THCRAP_HEADERS} -D_GLIBCXX_USE_DEPRECATED=0 -Wno-ignored-attributes -Wno-deprecated-volatile -std=c++20 -o ${DLL_NAME}
 	@if [ -f ${DLL_NAME} ]; then \
 		echo "Build successful!"; \
 	else \
