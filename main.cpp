@@ -172,7 +172,7 @@ static const GameDataOffsets game_offsets_lookup[] {
     },
   };
 
-const GameDataOffsets* current_game_offsets;
+const GameDataOffsets* cur_game_offsets;
 
 uint8_t read_byte(uintptr_t address) {
   if (address == 0) {
@@ -191,29 +191,17 @@ DWORD __stdcall mem_scan(void*)
         DWORD bytesWritten;
         
         // Get the game data from game_offsets_lookup
-        current_game_offsets = &game_offsets_lookup[GAME_ID];
-        uint8_t lives = current_game_offsets->lives_are_float ? current_game_offsets->get_floating_lives(current_game_offsets->globals_offset) : *(uint8_t*)current_game_offsets->lives;
-        uint8_t bombs = current_game_offsets->lives_are_float ? current_game_offsets->get_floating_bombs(current_game_offsets->globals_offset) : *(uint8_t*)current_game_offsets->bombs;
-        uint8_t power = current_game_offsets->lives_are_float ? current_game_offsets->get_floating_power(current_game_offsets->globals_offset) : *(uint8_t*)current_game_offsets->power;
-        uint32_t score = current_game_offsets->lives_are_float ? current_game_offsets->get_score(current_game_offsets->globals_offset) : *(uint32_t*)current_game_offsets->score;
+        cur_game_offsets = &game_offsets_lookup[GAME_ID];
+        uint8_t lives = cur_game_offsets->lives_are_float ? cur_game_offsets->get_floating_lives(cur_game_offsets->globals_offset) : *(uint8_t*)cur_game_offsets->lives;
+        uint8_t bombs = cur_game_offsets->lives_are_float ? cur_game_offsets->get_floating_bombs(cur_game_offsets->globals_offset) : *(uint8_t*)cur_game_offsets->bombs;
+        uint8_t power = cur_game_offsets->lives_are_float ? cur_game_offsets->get_floating_power(cur_game_offsets->globals_offset) : *(uint8_t*)cur_game_offsets->power;
+        uint32_t score = cur_game_offsets->lives_are_float ? cur_game_offsets->get_score(cur_game_offsets->globals_offset) : *(uint32_t*)cur_game_offsets->score;
 
 
         // Write information to JSON file, make sure its formatted with tabs
         // TODO: make this a bit more elegant, maybe use a library
         const char* json = "{\n\t\"lives\": %d,\n\t\"bombs\": %d,\n\t\"power\": %d,\n\t\"score\": %d,\n\t\"character\": %d,\n\t\"shottype\": %d,\n\t\"stage\": %d,\n\t\"difficulty\": %d,\n\t\"gamestate\": %d,\n\t\"game\": %d\n}";
-        // char* buf = alloc_sprintf(json, lives, bombs, power, score, read_byte(current_game_offsets->character), read_byte(current_game_offsets->shottype), read_byte(current_game_offsets->stage), read_byte(current_game_offsets->difficulty), current_game_offsets->is_game_manager_init(current_game_offsets->game_manager), current_game_offsets->game);
-        // Rewrite the above to use jansson
-        json_error_t err;
-        json_t* root = json_loads(json, 0, &err);
-        if (!root) {
-          fprintf(stderr, "[9L] ERR: Line %d: %s\n", err.line, err.text);
-          return 1;
-        }
-        char* buf = json_dumps(root, JSON_INDENT(4));
-        if (!buf) {
-          fprintf(stderr, "[9L] ERR: Failed to dump json\n");
-          return 1;
-        }
+        char* buf = alloc_sprintf(json, lives, bombs, power, score, read_byte(cur_game_offsets->character), read_byte(cur_game_offsets->shottype), read_byte(cur_game_offsets->stage), read_byte(cur_game_offsets->difficulty), read_byte(cur_game_offsets->gamestate), cur_game_offsets->game);
         WriteFile(hFile, buf, strlen(buf), &bytesWritten, NULL);
 
 

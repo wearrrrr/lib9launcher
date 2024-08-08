@@ -9,11 +9,12 @@
 	THCRAP_HEADERS = ../thcrap/thcrap/src
 	PACKER = upx
 	PACKED_DLL_NAME = ${DLL_NAME}_packed
+	LIBS = thcrap.lib
 
 	RELEASE = TRUE
 
 build:
-	${CC} -target i686-pc-win32-gnu -shared ${INPUT_FILES} -Oz thcrap.lib jansson.lib -I${WIN32UTF8} -I${THCRAP_EXTERNAL_DEPS} -I${THCRAP_HEADERS} -D_GLIBCXX_USE_DEPRECATED=0 -Wno-ignored-attributes -Wno-deprecated-volatile -std=c++20 -o ${DLL_NAME}
+	${CC} -target i686-pc-win32-gnu -shared ${INPUT_FILES} -Oz ${LIBS} -I${WIN32UTF8} -I${THCRAP_EXTERNAL_DEPS} -I${THCRAP_HEADERS} -std=c++20 -D_GLIBCXX_USE_DEPRECATED=0 -Wno-ignored-attributes -Wno-deprecated-volatile -o ${DLL_NAME}
 	@if [ -f ${DLL_NAME} ]; then \
 		echo "Build successful!"; \
 	else \
